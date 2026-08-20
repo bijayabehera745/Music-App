@@ -39,8 +39,7 @@
     "deploy": "wrangler deploy",
     "prerelease": "bun run test",
     "release": "bun run changelogen --release --push",
-    "spell-check": "cspell .",
-    "postinstall": "npx simple-git-hooks"
+    "spell-check": "cspell ."
   },
   "simple-git-hooks": {
     "pre-commit": "bun run lint && bun run format",
