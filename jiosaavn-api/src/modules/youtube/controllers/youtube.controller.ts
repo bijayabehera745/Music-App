@@ -112,9 +112,10 @@ export class YouTubeController implements Routes {
       if (!videoId) return ctx.text('Missing videoId', 400)
       
       const nodeStream = this.ytService.getAudioStream(videoId)
+      if (!nodeStream) return ctx.text('Stream could not be generated', 500)
       
       // Node Readable to Web ReadableStream
-      const webStream = Readable.toWeb(nodeStream)
+      const webStream = Readable.toWeb(nodeStream as Readable)
       
       ctx.header('Content-Type', 'audio/webm')
       ctx.header('Transfer-Encoding', 'chunked')
