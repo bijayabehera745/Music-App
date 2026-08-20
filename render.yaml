@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: jiosaavn-api
+    runtime: node
+    rootDir: jiosaavn-api
+    region: singapore
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: YOUTUBE_API_KEY
+        sync: false   # Set this manually in the Render dashboard
+    healthCheckPath: /
