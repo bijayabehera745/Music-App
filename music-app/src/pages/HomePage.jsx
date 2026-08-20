@@ -5,14 +5,15 @@ import { usePlayer } from '../store'
 export default function HomePage() {
   const [songs, setSongs] = useState([])
   const [loading, setLoading] = useState(true)
-  const { queue, index, setQueue, setPlaying, current } = usePlayer()
+  const { setQueue, setPlaying, current } = usePlayer()
 
   useEffect(() => {
-    setLoading(true)
+    let active = true
     getTrending()
-      .then(results => setSongs(results.map(songToTrack)))
+      .then(results => active && setSongs(results.map(songToTrack)))
       .catch(() => {})
-      .finally(() => setLoading(false))
+      .finally(() => active && setLoading(false))
+    return () => { active = false }
   }, [])
 
   const playFrom = (i) => {

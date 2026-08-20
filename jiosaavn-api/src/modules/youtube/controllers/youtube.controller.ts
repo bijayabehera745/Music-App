@@ -1,6 +1,6 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
-import type { Routes } from '#common/types'
 import { YouTubeService } from '../services/youtube.service'
+import type { Routes } from '#common/types'
 
 export class YouTubeController implements Routes {
   public controller: OpenAPIHono

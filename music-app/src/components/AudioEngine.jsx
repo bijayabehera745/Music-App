@@ -1,11 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react'
 import { usePlayer } from '../store'
 
-function fmt(s) {
-  const t = Math.max(0, Math.round(s))
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`
-}
-
 export default function AudioEngine() {
   const ref = useRef(null)
   const { queue, index, playing, volume, setPlaying, setProgress, setLoading, next, resolveYtUrl } = usePlayer()

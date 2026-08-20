@@ -2,11 +2,6 @@ import { useState } from 'react'
 import { usePlayer } from '../store'
 import NowPlaying from './NowPlaying'
 
-function fmt(s) {
-  const t = Math.max(0, Math.round(s))
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`
-}
-
 export default function Player() {
   const { queue, index, playing, progress, setPlaying, setProgress, next, prev, loading } = usePlayer()
   const [expanded, setExpanded] = useState(false)
@@ -14,7 +9,6 @@ export default function Player() {
   if (!track) return null
 
   const pct = `${(progress * 100).toFixed(1)}%`
-  const dur = track.duration || 0
 
   return (
     <>

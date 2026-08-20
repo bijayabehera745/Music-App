@@ -1,5 +1,7 @@
 import ytdl from '@distube/ytdl-core'
 
+import process from 'node:process';
+
 const YT_API_KEY = process.env.YOUTUBE_API_KEY || ''
 const YT_API_BASE = 'https://www.googleapis.com/youtube/v3'
 
@@ -15,7 +17,9 @@ export class YouTubeService {
   }
 
   /** Fetch all video titles from a YouTube playlist via the Data API */
-  async getPlaylist(playlistUrl: string): Promise<{ title: string; tracks: Array<{ videoId: string; title: string; thumbnail?: string }> }> {
+  async getPlaylist(
+    playlistUrl: string
+  ): Promise<{ title: string; tracks: Array<{ videoId: string; title: string; thumbnail?: string }> }> {
     const playlistId = this.extractPlaylistId(playlistUrl)
     if (!playlistId) throw new Error('Invalid YouTube playlist URL')
 
