@@ -24,21 +24,10 @@ export default function YouTubePage() {
   const playPlaylist = async () => {
     if (!playlist) return
     setLoading(true)
-    // For each track: try to find it on JioSaavn first, fall back to YouTube audio
-    const tracks = []
-    for (const t of playlist.tracks) {
-      // Search JioSaavn by video title (strip common YouTube junk)
-      const cleanTitle = t.title.replace(/\(Official.*?\)|\[.*?\]|ft\.|feat\./gi, '').trim()
-      try {
-        const results = await searchSongs(cleanTitle, 3)
-        if (results.length) {
-          const jiosaavnTrack = songToTrack(results[0])
-          if (jiosaavnTrack.url) { tracks.push(jiosaavnTrack); continue }
-        }
-      } catch {}
-      // Fallback: stream from YouTube
-      tracks.push(ytTrackToTrack(t))
-    }
+    
+    // Always stream directly from YouTube for YouTube playlists
+    const tracks = playlist.tracks.map(ytTrackToTrack)
+    
     if (tracks.length) { setQueue(tracks, 0); setPlaying(true) }
     setLoading(false)
   }
@@ -48,7 +37,7 @@ export default function YouTubePage() {
       <div className="section">
         <div className="section-title">YouTube Playlist</div>
         <div style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: 14 }}>
-          Paste a YouTube playlist link. Songs are streamed from JioSaavn when available — YouTube audio as fallback (no ads).
+          Paste a YouTube playlist link. Songs are streamed directly from YouTube (no ads).
         </div>
       </div>
 
@@ -72,7 +61,7 @@ export default function YouTubePage() {
         {playlist && (
           <>
             <div className="yt-title">📼 {playlist.title}</div>
-            <div className="yt-sub">{playlist.tracks.length} tracks · Songs will play from JioSaavn where available</div>
+            <div className="yt-sub">{playlist.tracks.length} tracks</div>
           </>
         )}
       </div>
@@ -80,7 +69,7 @@ export default function YouTubePage() {
       {playlist && (
         <>
           <button className="start-btn" onClick={playPlaylist} disabled={loading}>
-            {loading ? 'Matching songs…' : `▶  Play all ${playlist.tracks.length} songs`}
+            {loading ? 'Loading…' : `▶  Play all ${playlist.tracks.length} songs`}
           </button>
 
           <div className="song-list gap-top">
@@ -91,7 +80,7 @@ export default function YouTubePage() {
                 </div>
                 <div className="song-info">
                   <div className="song-title">{t.title}</div>
-                  <div className="song-artist">YouTube · will match JioSaavn</div>
+                  <div className="song-artist">YouTube</div>
                 </div>
                 <span className="song-dur" style={{ fontSize: '.65rem' }}>#{i + 1}</span>
               </div>
