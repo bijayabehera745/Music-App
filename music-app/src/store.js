@@ -34,19 +34,6 @@ export const usePlayer = create((set, get) => ({
   },
 
   resolveYtUrl: async (track) => {
-    if (track.source !== 'youtube' || track.url) return track.url
-    set({ loading: true })
-    try {
-      const data = await getYtStreamUrl(track.videoId)
-      // Patch url into the queue
-      const { queue, index } = get()
-      const newQueue = [...queue]
-      newQueue[index] = { ...track, url: data.url, duration: data.duration }
-      set({ queue: newQueue, loading: false })
-      return data.url
-    } catch {
-      set({ loading: false })
-      return null
-    }
+    return track.url
   }
 }))

@@ -82,7 +82,7 @@ export function ytTrackToTrack(t) {
     title: t.title,
     artists: 'YouTube',
     image: t.thumbnail,
-    url: null, // resolved lazily when playing
+    url: `${BASE}/youtube/play?videoId=${t.videoId}`,
     videoId: t.videoId,
     source: 'youtube',
     duration: t.duration ?? 0,

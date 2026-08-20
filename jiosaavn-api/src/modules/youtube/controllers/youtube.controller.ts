@@ -1,6 +1,7 @@
 import { createRoute, OpenAPIHono, z } from '@hono/zod-openapi'
 import { YouTubeService } from '../services/youtube.service'
 import type { Routes } from '#common/types'
+import { Readable } from 'node:stream'
 
 export class YouTubeController implements Routes {
   public controller: OpenAPIHono
@@ -103,5 +104,21 @@ export class YouTubeController implements Routes {
         return ctx.json({ success: true, data: result })
       }
     )
+
+    // GET /api/youtube/play?videoId=... (Direct proxy)
+    // No openapi spec needed, standard GET route returning a stream
+    this.controller.get('/youtube/play', (ctx) => {
+      const videoId = ctx.req.query('videoId')
+      if (!videoId) return ctx.text('Missing videoId', 400)
+      
+      const nodeStream = this.ytService.getAudioStream(videoId)
+      
+      // Node Readable to Web ReadableStream
+      const webStream = Readable.toWeb(nodeStream)
+      
+      ctx.header('Content-Type', 'audio/webm')
+      ctx.header('Transfer-Encoding', 'chunked')
+      return ctx.body(webStream as any)
+    })
   }
 }

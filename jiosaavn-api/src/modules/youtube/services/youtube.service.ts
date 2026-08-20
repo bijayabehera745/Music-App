@@ -77,4 +77,10 @@ export class YouTubeService {
       duration: Number(info.videoDetails.lengthSeconds)
     }
   }
+
+  /** Get a raw audio stream for a YouTube video using ytdl-core */
+  getAudioStream(videoId: string) {
+    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`
+    return ytdl(videoUrl, { quality: 'highestaudio', filter: 'audioonly' })
+  }
 }
