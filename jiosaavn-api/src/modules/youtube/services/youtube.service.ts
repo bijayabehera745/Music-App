@@ -68,7 +68,10 @@ export class YouTubeService {
   /** Get a direct audio stream URL for a YouTube video using yt-dlp */
   async getStreamUrl(videoId: string): Promise<{ url: string; title: string; thumbnail?: string; duration?: number }> {
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`
-    const info = (await youtubedl(videoUrl, { dumpJson: true })) as any
+    const args: any = { dumpJson: true }
+    if (process.env.YOUTUBE_COOKIES) args.cookies = process.env.YOUTUBE_COOKIES
+    
+    const info = (await youtubedl(videoUrl, args)) as any
     const audioFormats = info.formats.filter((f: any) => f.vcodec === 'none' && f.acodec !== 'none')
     const format = audioFormats.sort((a: any, b: any) => b.abr - a.abr)[0] || info.formats[0]
     return {
@@ -82,10 +85,13 @@ export class YouTubeService {
   /** Get a raw audio stream for a YouTube video using yt-dlp */
   getAudioStream(videoId: string) {
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`
-    const subprocess = youtubedl.exec(videoUrl, {
+    const args: any = {
       format: 'bestaudio',
       output: '-'
-    })
+    }
+    if (process.env.YOUTUBE_COOKIES) args.cookies = process.env.YOUTUBE_COOKIES
+    
+    const subprocess = youtubedl.exec(videoUrl, args)
     // @ts-ignore
     return subprocess.stdout
   }
