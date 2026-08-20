@@ -25,25 +25,8 @@ export default function YouTubePage() {
     if (!playlist) return
     setLoading(true)
     
-    // Stealth hybrid mode: find high-quality audio on JioSaavn to bypass YouTube bot protection
-    const tracks = []
-    for (const t of playlist.tracks) {
-      const cleanTitle = t.title.replace(/\(Official.*?\)|\[.*?\]|ft\.|feat\./gi, '').trim()
-      try {
-        const results = await searchSongs(cleanTitle, 3)
-        if (results.length) {
-          const jiosaavnTrack = songToTrack(results[0])
-          // Hide the JioSaavn source in UI
-          jiosaavnTrack.artists = 'YouTube' 
-          jiosaavnTrack.source = 'youtube'
-          jiosaavnTrack.image = t.thumbnail
-          
-          if (jiosaavnTrack.url) { tracks.push(jiosaavnTrack); continue }
-        }
-      } catch {}
-      // Fallback: we won't push the direct YT track anymore since it's strictly blocked.
-      // If we can't find it, we just skip it rather than crashing the player.
-    }
+    // Always stream directly from YouTube for YouTube playlists
+    const tracks = playlist.tracks.map(ytTrackToTrack)
     
     if (tracks.length) { setQueue(tracks, 0); setPlaying(true) }
     setLoading(false)

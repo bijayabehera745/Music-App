@@ -64,24 +64,6 @@ export default function NowPlaying({ onClose }) {
         />
         <span className="np-vol-icon">🔊</span>
       </div>
-
-      {/* Queue preview */}
-      {queue.length > 1 && (
-        <div style={{ width: '100%', marginTop: 24, flex: 1, overflowY: 'auto' }}>
-          <div className="section-title" style={{ padding: '0 0 8px' }}>Up next</div>
-          {queue.slice(index + 1, index + 6).map(t => (
-            <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
-              <div className="song-art" style={{ width: 36, height: 36, fontSize: '1rem' }}>
-                {t.image ? <img src={t.image} alt={t.title} /> : '🎵'}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="song-title" style={{ fontSize: '.8rem' }}>{t.title}</div>
-                <div className="song-artist">{t.artists}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }

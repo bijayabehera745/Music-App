@@ -5,6 +5,7 @@ import Player from './components/Player'
 import HomePage from './pages/HomePage'
 import ArtistsPage from './pages/ArtistsPage'
 import YouTubePage from './pages/YouTubePage'
+import { usePlayer } from './store'
 
 const TABS = [
   { id: 'trending', label: 'Trending' },
@@ -14,11 +15,20 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState('trending')
+  const { queue, index } = usePlayer()
+  const currentTrack = queue[index]
 
   return (
-    <div className="app">
-      {/* Hidden audio engine */}
-      <AudioEngine />
+    <>
+      {currentTrack?.image && (
+        <div 
+          className="global-bg" 
+          style={{ backgroundImage: `url(${currentTrack.image})` }} 
+        />
+      )}
+      <div className="app">
+        {/* Hidden audio engine */}
+        <AudioEngine />
 
       {/* Header */}
       <header className="header">
@@ -45,5 +55,6 @@ export default function App() {
       {/* Persistent bottom player */}
       <Player />
     </div>
+    </>
   )
 }

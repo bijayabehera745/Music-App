@@ -18,6 +18,9 @@ export const usePlayer = create((set, get) => ({
   setVolume: (volume) => set({ volume }),
   setLoading: (loading) => set({ loading }),
 
+  blobCache: {},    // trackId -> blobUrl
+  prefetching: {},  // trackId -> boolean
+
   current: () => {
     const { queue, index } = get()
     return queue[index] ?? null
@@ -31,6 +34,29 @@ export const usePlayer = create((set, get) => ({
   prev: () => {
     const { index } = get()
     if (index > 0) set({ index: index - 1, progress: 0 })
+  },
+
+  prefetchNext: async () => {
+    const { queue, index, blobCache, prefetching } = get()
+    const nextTrack = queue[index + 1]
+    if (!nextTrack || !nextTrack.url) return
+    
+    const id = nextTrack.id
+    if (blobCache[id] || prefetching[id]) return
+    
+    set(state => ({ prefetching: { ...state.prefetching, [id]: true } }))
+    
+    try {
+      const res = await fetch(nextTrack.url)
+      const blob = await res.blob()
+      const objectUrl = URL.createObjectURL(blob)
+      set(state => ({ 
+        blobCache: { ...state.blobCache, [id]: objectUrl },
+        prefetching: { ...state.prefetching, [id]: false }
+      }))
+    } catch (e) {
+      set(state => ({ prefetching: { ...state.prefetching, [id]: false } }))
+    }
   },
 
   resolveYtUrl: async (track) => {

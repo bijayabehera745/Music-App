@@ -28,11 +28,18 @@ html, body, #root {
 }
 
 /* ── Scrollable page shell ─────────────────────────── */
+.global-bg {
+  position: fixed; inset: -10%; z-index: 0;
+  background-size: cover; background-position: center;
+  /* Base brightness 0.25, max brightness 0.65 based on beat intensity */
+  filter: blur(50px) brightness(calc(0.25 + (var(--beat-intensity, 0) * 0.4)));
+  transition: background-image 0.8s ease-in-out;
+}
 .app {
   display: flex; flex-direction: column;
   height: 100svh; width: 100%;
   max-width: 430px; margin: 0 auto;
-  position: relative;
+  position: relative; z-index: 1;
 }
 
 .page {
@@ -47,10 +54,10 @@ html, body, #root {
   height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  background: rgba(12, 12, 16, 0.4);
   position: sticky; top: 0; z-index: 10;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px);
 }
 .header-logo {
   font-family: 'Playfair Display', serif;
@@ -64,13 +71,13 @@ html, body, #root {
 }
 .nav-tab {
   background: none; border: none; cursor: pointer;
-  color: var(--muted); font-size: .72rem; font-weight: 500;
+  color: rgba(255,255,255,0.5); font-size: .72rem; font-weight: 500;
   padding: 6px 10px; border-radius: 20px;
   transition: all .2s;
   font-family: inherit;
 }
 .nav-tab.active {
-  background: var(--bg3); color: var(--accent);
+  background: rgba(255,255,255,0.1); color: var(--text);
 }
 
 /* ── Section titles ────────────────────────────────── */
@@ -97,7 +104,7 @@ html, body, #root {
 }
 .artist-chip .chip-avatar {
   width: 56px; height: 56px; border-radius: 50%;
-  background: var(--bg3);
+  background: rgba(255,255,255,0.05);
   border: 2px solid transparent;
   transition: border-color .2s, transform .2s;
   display: flex; align-items: center; justify-content: center;
@@ -107,7 +114,7 @@ html, body, #root {
 .artist-chip .chip-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .artist-chip.selected .chip-avatar { border-color: var(--accent); transform: scale(1.05); }
 .artist-chip .chip-label {
-  font-size: .62rem; text-align: center; color: var(--muted);
+  font-size: .62rem; text-align: center; color: rgba(255,255,255,0.7);
   max-width: 60px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -117,14 +124,14 @@ html, body, #root {
 }
 .mode-btn {
   flex: 1; padding: 12px 10px; border-radius: var(--radius);
-  background: var(--bg2); border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
   color: var(--text); font-family: inherit; font-size: .8rem;
   font-weight: 500; cursor: pointer;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
   transition: background .2s, border-color .2s;
 }
 .mode-btn:hover, .mode-btn.active {
-  background: var(--bg3); border-color: var(--accent);
+  background: rgba(255,255,255,0.08); border-color: var(--accent);
   color: var(--accent);
 }
 .mode-btn .mode-icon { font-size: 1.3rem; }
@@ -138,12 +145,12 @@ html, body, #root {
   border: none; background: none; width: 100%;
   text-align: left; font-family: inherit;
 }
-.song-row:hover { background: var(--bg2); }
-.song-row.active { background: var(--bg2); }
+.song-row:hover { background: rgba(255,255,255,0.05); }
+.song-row.active { background: rgba(255,255,255,0.05); }
 .song-row.active .song-title { color: var(--accent); }
 .song-art {
   width: 44px; height: 44px; border-radius: 8px;
-  object-fit: cover; background: var(--bg3); flex-shrink: 0;
+  object-fit: cover; background: rgba(255,255,255,0.05); flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem; overflow: hidden;
 }
@@ -154,23 +161,23 @@ html, body, #root {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .song-artist {
-  font-size: .72rem; color: var(--muted); margin-top: 2px;
+  font-size: .72rem; color: rgba(255,255,255,0.6); margin-top: 2px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.song-dur { font-size: .7rem; color: var(--muted); flex-shrink: 0; }
+.song-dur { font-size: .7rem; color: rgba(255,255,255,0.5); flex-shrink: 0; }
 
 /* ── Bottom Player ─────────────────────────────────── */
 .player {
   position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
   width: 100%; max-width: 430px;
-  background: rgba(13,13,18,.92);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
+  background: rgba(10, 10, 14, 0.4);
+  backdrop-filter: blur(25px);
+  border-top: 1px solid rgba(255,255,255,0.04);
   z-index: 100;
 }
 .player-progress {
   width: 100%; height: 3px;
-  background: var(--bg3); cursor: pointer;
+  background: rgba(255,255,255,0.1); cursor: pointer;
   appearance: none; border: none; padding: 0;
 }
 .player-progress::-webkit-slider-thumb {
@@ -180,7 +187,7 @@ html, body, #root {
 }
 .player-progress::-webkit-slider-runnable-track {
   height: 3px;
-  background: linear-gradient(to right, var(--accent) var(--pct, 0%), var(--bg3) var(--pct, 0%));
+  background: linear-gradient(to right, var(--accent) var(--pct, 0%), rgba(255,255,255,0.1) var(--pct, 0%));
 }
 .player-bar {
   display: flex; align-items: center; gap: 10px;
@@ -189,7 +196,7 @@ html, body, #root {
 }
 .player-art {
   width: 44px; height: 44px; border-radius: 8px; flex-shrink: 0;
-  object-fit: cover; background: var(--bg3);
+  object-fit: cover; background: rgba(255,255,255,0.05);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem; overflow: hidden;
 }
@@ -200,7 +207,7 @@ html, body, #root {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .player-artist {
-  font-size: .7rem; color: var(--muted); margin-top: 1px;
+  font-size: .7rem; color: rgba(255,255,255,0.6); margin-top: 1px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .player-controls { display: flex; align-items: center; gap: 4px; }
@@ -211,7 +218,7 @@ html, body, #root {
   border-radius: 50%; transition: background .15s;
   line-height: 1;
 }
-.ctrl-btn:hover { background: var(--bg3); }
+.ctrl-btn:hover { background: rgba(255,255,255,0.1); }
 .ctrl-btn.play {
   background: var(--accent); color: var(--bg);
   width: 40px; height: 40px; font-size: 1.1rem;
@@ -221,9 +228,11 @@ html, body, #root {
 /* ── Now Playing full-screen overlay ───────────────── */
 .now-playing-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: var(--bg);
+  background: rgba(10, 10, 15, 0.45);
+  backdrop-filter: blur(40px);
   display: flex; flex-direction: column; align-items: center;
-  padding: 40px 28px 20px;
+  justify-content: center;
+  padding: 40px 28px;
   animation: slideUp .3s ease;
 }
 @keyframes slideUp {

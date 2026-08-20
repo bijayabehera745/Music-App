@@ -1,4 +1,4 @@
-import ytdl from '@distube/ytdl-core'
+import youtubedl from 'youtube-dl-exec'
 
 import process from 'node:process';
 
@@ -65,22 +65,28 @@ export class YouTubeService {
     return { title: playlistTitle, tracks }
   }
 
-  /** Get a direct audio stream URL for a YouTube video using ytdl-core */
+  /** Get a direct audio stream URL for a YouTube video using yt-dlp */
   async getStreamUrl(videoId: string): Promise<{ url: string; title: string; thumbnail?: string; duration?: number }> {
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`
-    const info = await ytdl.getInfo(videoUrl)
-    const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio', filter: 'audioonly' })
+    const info = (await youtubedl(videoUrl, { dumpJson: true })) as any
+    const audioFormats = info.formats.filter((f: any) => f.vcodec === 'none' && f.acodec !== 'none')
+    const format = audioFormats.sort((a: any, b: any) => b.abr - a.abr)[0] || info.formats[0]
     return {
       url: format.url,
-      title: info.videoDetails.title,
-      thumbnail: info.videoDetails.thumbnails?.at(-1)?.url,
-      duration: Number(info.videoDetails.lengthSeconds)
+      title: info.title,
+      thumbnail: info.thumbnail,
+      duration: info.duration
     }
   }
 
-  /** Get a raw audio stream for a YouTube video using ytdl-core */
+  /** Get a raw audio stream for a YouTube video using yt-dlp */
   getAudioStream(videoId: string) {
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`
-    return ytdl(videoUrl, { quality: 'highestaudio', filter: 'audioonly' })
+    const subprocess = youtubedl.exec(videoUrl, {
+      format: 'bestaudio',
+      output: '-'
+    })
+    // @ts-ignore
+    return subprocess.stdout
   }
 }
